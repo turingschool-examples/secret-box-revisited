@@ -12,6 +12,11 @@ var api_secrets = require('./routes/api/secrets');
 
 var app = express();
 
+var environment   = process.env.NODE_ENV || 'development'
+var configuration = require('./knexfile')[environment]
+var database      = require('knex')(configuration)
+app.locals.database = database
+
 app.locals.secrets    = {"1": "I am a banana"}
 app.locals.current_id = 1
 
