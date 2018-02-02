@@ -17,9 +17,6 @@ var configuration = require('./knexfile')[environment]
 var database      = require('knex')(configuration)
 app.locals.database = database
 
-app.locals.secrets    = {"1": "I am a banana"}
-app.locals.current_id = 1
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
