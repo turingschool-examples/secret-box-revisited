@@ -1,14 +1,14 @@
 var express = require('express');
-var router = express.Router();
-var pry    = require('pryjs')
+var router  = express.Router();
+var pry     = require('pryjs')
 
 router.get('/:id', function(req, res, next) {
-  var id      = req.params.id
+  var id = req.params.id
 
   req.app.locals.database.raw(
     'SELECT * FROM secrets WHERE id=?',
     [id]
-  ).then((data) => {
+  ).then(function(data) {
     if(!data.rows) {
       return res.sendStatus(404)
     } else {
@@ -29,7 +29,7 @@ router.post('/', function(req, res, next) {
   req.app.locals.database.raw(
     'INSERT INTO secrets(message, created_at) VALUES (?, ?) RETURNING *',
     [message, new Date]
-  ).then((inserted) => {
+  ).then(function(inserted) {
       res.status(201).json(inserted.rows)
   })
 })
