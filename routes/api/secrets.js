@@ -1,20 +1,18 @@
 var express = require('express');
 var router  = express.Router();
-var pry     = require('pryjs')
+var Secret  = require('../../models/secret')
 
 router.get('/:id', function(req, res, next) {
   var id = req.params.id
 
-  req.app.locals.database.raw(
-    'SELECT * FROM secrets WHERE id=?',
-    [id]
-  ).then(function(data) {
-    if(!data.rows) {
-      return res.sendStatus(404)
-    } else {
-      res.json(data.rows)
-    }
-  })
+  Secret.find(id)
+    .then(function(secret) {
+      if(!secret.rows) {
+        return res.sendStatus(404)
+      } else {
+        res.json(secret.rows)
+      }
+    })
 })
 
 router.post('/', function(req, res, next) {
@@ -26,12 +24,10 @@ router.post('/', function(req, res, next) {
     })
   }
 
-  req.app.locals.database.raw(
-    'INSERT INTO secrets(message, created_at) VALUES (?, ?) RETURNING *',
-    [message, new Date]
-  ).then(function(inserted) {
-      res.status(201).json(inserted.rows)
-  })
+  Secret.create(message)
+    .then(function(secret) {
+      res.status(201).json(secret.rows)
+    })
 })
 
 module.exports = router;
