@@ -1,18 +1,21 @@
 var express = require('express');
 var router  = express.Router();
 var pry     = require('pryjs')
+var environment   = process.env.NODE_ENV || 'development'
+var configuration = require('../../knexfile')[environment]
+var database      = require('knex')(configuration)
 
 router.get('/:id', function(req, res, next) {
   var id = req.params.id
 
-  req.app.locals.database.raw(
+  database.raw(
     'SELECT * FROM secrets WHERE id=?',
     [id]
-  ).then(function(data) {
-    if(!data.rows) {
+  ).then(function(secret) {
+    if(!secret.rows) {
       return res.sendStatus(404)
     } else {
-      res.json(data.rows)
+      res.json(secret.rows)
     }
   })
 })
@@ -26,11 +29,11 @@ router.post('/', function(req, res, next) {
     })
   }
 
-  req.app.locals.database.raw(
+  database.raw(
     'INSERT INTO secrets(message, created_at) VALUES (?, ?) RETURNING *',
     [message, new Date]
-  ).then(function(inserted) {
-      res.status(201).json(inserted.rows)
+  ).then(function(secret) {
+      res.status(201).json(secret.rows)
   })
 })
 

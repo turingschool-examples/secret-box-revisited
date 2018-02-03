@@ -12,10 +12,6 @@ var api_secrets = require('./routes/api/secrets');
 
 var app = express();
 
-var environment   = process.env.NODE_ENV || 'development'
-var configuration = require('./knexfile')[environment]
-var database      = require('knex')(configuration)
-app.locals.database = database
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
