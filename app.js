@@ -12,8 +12,6 @@ var api_secrets = require('./routes/api/secrets');
 
 var app = express();
 
-app.locals.secrets    = {"1": "I am a banana"}
-app.locals.current_id = 1
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

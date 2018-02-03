@@ -1,19 +1,25 @@
 var express = require('express');
-var router = express.Router();
+var router  = express.Router();
+var environment   = process.env.NODE_ENV || 'development'
+var configuration = require('../../knexfile')[environment]
+var database      = require('knex')(configuration)
 
 router.get('/:id', function(req, res, next) {
-  var id      = req.params.id
-  var message = req.app.locals.secrets[id]
+  var id = req.params.id
 
-  if(!message) { return res.sendStatus(404) }
-
-  res.json({id, message})
+  database.raw(
+    'SELECT * FROM secrets WHERE id=?',
+    [id]
+  ).then(function(secret) {
+    if(!secret.rows) {
+      return res.sendStatus(404)
+    } else {
+      res.json(secret.rows)
+    }
+  })
 })
 
 router.post('/', function(req, res, next) {
-  req.app.locals.current_id += 1
-
-  var id      = req.app.locals.current_id
   var message = req.body.message
 
   if(!message) {
@@ -22,9 +28,12 @@ router.post('/', function(req, res, next) {
     })
   }
 
-  req.app.locals.secrets[id] = message
-
-  res.status(201).json({id, message})
+  database.raw(
+    'INSERT INTO secrets(message, created_at) VALUES (?, ?) RETURNING *',
+    [message, new Date]
+  ).then(function(secret) {
+      res.status(201).json(secret.rows)
+  })
 })
 
 module.exports = router;
