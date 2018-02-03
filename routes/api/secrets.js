@@ -1,6 +1,5 @@
 var express = require('express');
 var router  = express.Router();
-var pry     = require('pryjs')
 var environment   = process.env.NODE_ENV || 'development'
 var configuration = require('../../knexfile')[environment]
 var database      = require('knex')(configuration)
