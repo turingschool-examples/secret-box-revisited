@@ -5,12 +5,13 @@ var Secret  = require('../../models/secret')
 router.get('/:id', function(req, res, next) {
   var id = req.params.id
 
+  console.log(id)
   Secret.find(id)
     .then(function(secret) {
-      if(!secret.rows) {
+      if(!secret) {
         return res.sendStatus(404)
       } else {
-        res.json(secret.rows)
+        res.json(secret)
       }
     })
 })
@@ -26,7 +27,7 @@ router.post('/', function(req, res, next) {
 
   Secret.create(message)
     .then(function(secret) {
-      res.status(201).json(secret.rows)
+      res.status(201).json(secret)
     })
 })
 

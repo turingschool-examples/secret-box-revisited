@@ -7,14 +7,18 @@ var Secret = {
     return database.raw(
       'SELECT * FROM secrets WHERE id=?',
       [id]
-    )
+    ).then(function(secret) {
+      return secret.rows[0]
+    })
   },
 
   create: function(message) {
     return database.raw(
       'INSERT INTO secrets(message, created_at) VALUES (?, ?) RETURNING *',
       [message, new Date]
-    )
+    ).then(function(secret) {
+      return secret.rows[0]
+    })
   }
 }
 
