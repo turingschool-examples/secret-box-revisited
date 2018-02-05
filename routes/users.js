@@ -3,7 +3,8 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  var locals = {title: "User Show", name: "George", age: 44, hobbies: "Skydiving"}
+  res.render('users/show', locals);
 });
 
 module.exports = router;
